@@ -1,0 +1,3 @@
+[submodule "thirdparty/gmsh"]
+	path = thirdparty/gmsh
+	url = https://github.com/live-clones/gmsh
