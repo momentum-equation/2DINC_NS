@@ -1,20 +1,9 @@
 #pragma once
 #include <array>
+#include <cstdint>
+#include <cmath>
+#include <cassert>
 
-#ifdef SINGLE_PRECISION
-    typedef float real;
-#else
-    typedef double real;
-#endif
+typedef int label;
 
-struct Point2D
-{
-    Point2D(real _x, real _y):
-        x(_x), y(_y)
-    {}
-
-    real x;
-    real y;
-};
-
-
+typedef uint32_t dim;

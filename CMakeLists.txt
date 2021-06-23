@@ -8,6 +8,10 @@ project(
   DESCRIPTION "Noob's 2D Incompressible CFD Solver. :)"
   LANGUAGES CXX)
 
+set(CMAKE_CXX_STANDARD 17)
+
+option(BUILD_TESTING "Build tests for this project" ON)
+
 # Only do these if this is the main project, and not if it is included through add_subdirectory
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 
@@ -26,6 +30,8 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
   endif()
 
 endif()
+
+add_subdirectory(include)
 
 # The compiled library code is here
 add_subdirectory(src)

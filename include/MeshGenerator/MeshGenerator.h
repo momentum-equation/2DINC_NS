@@ -1,5 +1,5 @@
 #pragma once
-#include "Elementary.h"
+#include "Primitives/Elementary.h"
 #include <string>
 #include <vector>
 
@@ -19,9 +19,6 @@ private:
     std::string _header;
     std::string _name;
     
-    std::vector<Triangle> _triangles;
-
-    count_t _nTriangles;
 };
 
 }
