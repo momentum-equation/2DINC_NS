@@ -74,5 +74,6 @@
         "*.lxx": "cpp",
         "*.gxx": "cpp"
     },
-    "vmssoftware.project-dep.buildName": "DEBUG"
+    "vmssoftware.project-dep.buildName": "DEBUG",
+    "cmake.configureOnOpen": true
 }

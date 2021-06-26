@@ -30,6 +30,8 @@ inline Point Point::operator= (const Point& pt)
     x = pt.x;
     y = pt.y;
     z = pt.z;
+
+    return *this;
 }
 
 double Point::magnitude() const
@@ -54,6 +56,8 @@ inline Point Point::operator= (Point&& pt)
     x = std::move(pt.x);
     y = std::move(pt.y);
     z = std::move(pt.z);
+
+    return *this;
 }
 
 inline Point Point::operator+ (const Point& pt)

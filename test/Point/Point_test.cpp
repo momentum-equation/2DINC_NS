@@ -19,9 +19,3 @@ TEST(Point, SimplePoint)
     EXPECT_EQ(pt3.y, pt4.y);
     EXPECT_EQ(pt3.z, pt4.z);
 }
-
-int main(int argc, char* argv[])
-{
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
-}

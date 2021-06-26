@@ -1,0 +1,1 @@
+CREATE_TEST(Point_test.cpp Point PointTest)

@@ -1,5 +1,4 @@
 #include "MeshGenerator/MeshGenerator.h"
-#include <gmsh/api/gmsh.h>
 
 namespace Geometry
 {

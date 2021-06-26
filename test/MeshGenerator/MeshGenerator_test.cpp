@@ -1,9 +1,7 @@
 #include <gtest/gtest.h>
 #include "MeshGenerator/MeshGenerator.h"
-#include <gmsh/api/gmsh.h>
 
-namespace Geometry
-{
+using Geometry::MeshGenerator;
 
 TEST(TestMeshGenerator, NoFile)
 {
@@ -16,10 +14,3 @@ TEST(gmsh, addPoint)
     
 }
 
-}
-
-// int main(int argc, char* argv[])
-// {
-//     ::testing::InitGoogleTest(&argc, argv);
-//     return RUN_ALL_TESTS();
-// }

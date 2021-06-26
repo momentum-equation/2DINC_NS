@@ -1,5 +1,8 @@
 #pragma once
 #include "Primitives/Elementary.h"
+
+#include <gmsh/api/gmsh.h>
+
 #include <string>
 #include <vector>
 
