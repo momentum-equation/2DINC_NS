@@ -9,8 +9,10 @@ project(
   LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
-option(BUILD_TESTING "Build tests for this project" ON)
 add_compile_options(-fPIC)
+
+option(BUILD_TESTING "Build tests" ON)
+option(BUILD_DOC "Build documentation" ON)
 
 # Only do these if this is the main project, and not if it is included through add_subdirectory
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
@@ -24,7 +26,19 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 
   find_package(Doxygen)
   if(Doxygen_FOUND)
-    add_subdirectory(doc)
+    
+    set(DOXYGEN_IN doc/Doxyfile.in)
+    set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
+    
+    configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
+    message("Doxygen build started")
+    
+    add_custom_target(doc_doxygen ALL
+        COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        COMMENT "Generating API documentation with Doxygen"
+        VERBATIM)
+
   else()
     message(STATUS "Doxygen not found, not building docs")
   endif()
