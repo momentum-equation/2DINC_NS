@@ -1,6 +1,9 @@
-[submodule "thirdparty/gmsh"]
-	path = thirdparty/gmsh
-	url = https://github.com/live-clones/gmsh
-[submodule "thirdparty/googletest"]
-	path = thirdparty/googletest
-	url = https://github.com/google/googletest.git
+# [submodule "thirdparty/googletest"]
+# 	path = thirdparty/googletest
+# 	url = https://github.com/google/googletest.git
+[submodule "thirdParty/gmsh"]
+	path = thirdParty/gmsh
+	url = https://github.com/momentum-equation/gmsh.git
+[submodule "thirdParty/blitz"]
+	path = thirdParty/blitz
+	url = https://github.com/blitzpp/blitz.git
