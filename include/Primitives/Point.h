@@ -1,16 +1,30 @@
 #pragma once
+#include <utility>
+#include <cassert>
 
-struct Point
+#include "Primitives/IEntity.h"
+
+struct Point : public IEntity, public Vec3d
 {
     Point();
     Point(double _x, double _y, double _z);
     Point(const Point& pt);
+
     Point(Point&& pt);
 
     double magnitude() const;
     Point unitVector() const;
 
-    static double dot(const Point& U, const Point& V);
+    static double dot(const Vec3d& U, const Vec3d& V);
+
+public:
+    void setTag(const label tag) override;
+    label tag() const override;
+
+    // geometry transformation
+    void translate(const Vec3d& translationVector) override;
+    void rotate(double angle, Vec3d axis) override;
+    void scale(double factor) override;
 
 public:
     Point operator= (const Point& pt);
@@ -32,4 +46,7 @@ public:
     double x;
     double y;
     double z;
+
+private:
+    label _tag;
 };

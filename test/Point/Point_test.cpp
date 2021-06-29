@@ -18,4 +18,6 @@ TEST(Point, SimplePoint)
     EXPECT_EQ(pt3.x, pt4.x);
     EXPECT_EQ(pt3.y, pt4.y);
     EXPECT_EQ(pt3.z, pt4.z);
+
+    EXPECT_TRUE(pt3==pt4);
 }

@@ -6,7 +6,7 @@ using Geometry::MeshGenerator;
 TEST(TestMeshGenerator, NoFile)
 {
     MeshGenerator meshGenerator;
-    ASSERT_TRUE(meshGenerator.header() == "");
+    EXPECT_STREQ(meshGenerator.header().c_str(), "");
 }
 
 TEST(gmsh, addPoint)

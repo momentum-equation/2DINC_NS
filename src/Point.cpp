@@ -1,37 +1,27 @@
 #include "Primitives/Point.h"
 #include <cmath>
-#include <cassert>
-#include <utility>
 
-Point::Point()
-:
-    x(0), y(0), z(0)
+Point::Point():
+    x(0),
+    y(0),
+    z(0)
 {}
 
-Point::Point(double _x, double _y, double _z)
-:
-    x(_x), y(_y), z(_z)
+Point::Point(double x_, double y_, double z_):
+    x(x_),
+    y(y_),
+    z(z_)
 {}
 
-Point::Point(const Point& pt)
-:
-    Point(pt.x, pt.y, pt.z)
+Point::Point(const Point& other):
+    x(other.x),
+    y(other.y),
+    z(other.z)
 {}
 
-inline Point::Point(Point&& pt)
-:
-    x(std::move(pt.x)),
-    y(std::move(pt.y)),
-    z(std::move(pt.z))
-{}
-
-inline Point Point::operator= (const Point& pt)
+Point::Point(Point&& pt)
 {
-    x = pt.x;
-    y = pt.y;
-    z = pt.z;
-
-    return *this;
+    *this = std::move(pt);
 }
 
 double Point::magnitude() const
@@ -41,17 +31,44 @@ double Point::magnitude() const
 
 Point Point::unitVector() const
 {
-    assert(magnitude() != 0);
-
-    return (*this)/magnitude();
+    return *this/magnitude();
 }
 
-double Point::dot(const Point& U, const Point& V)
+void Point::setTag(const label tag)
 {
-    return (U.x*V.x + U.y*V.y) + U.z*V.z;
+    _tag = tag;
 }
 
-inline Point Point::operator= (Point&& pt)
+void Point::translate(const Vec3d& translationVector)
+{
+    *this = *this + Point(translationVector.x, translationVector.y, translationVector.z);
+}
+
+void Point::scale(double factor)
+{
+    *this = *this * factor;
+}
+
+void Point::rotate(double angle, Vec3d axis)
+{
+    x = 
+}
+
+label Point::tag() const
+{
+    return _tag;
+}
+
+Point Point::operator= (const Point& pt)
+{
+    x = pt.x;
+    y = pt.y;
+    z = pt.z;
+
+    return *this;
+}
+
+Point Point::operator= (Point&& pt)
 {
     x = std::move(pt.x);
     y = std::move(pt.y);
@@ -60,43 +77,43 @@ inline Point Point::operator= (Point&& pt)
     return *this;
 }
 
-inline Point Point::operator+ (const Point& pt)
+Point Point::operator+ (const Point& pt)
 {
     return Point(x+pt.x, y+pt.y, z+pt.z);
 }
 
-inline Point Point::operator+ (double val) const
+Point Point::operator+ (double val) const
 {
     return Point(x+val, y+val, z+val);
 }
 
-inline Point Point::operator- (const Point& pt)
+Point Point::operator- (const Point& pt)
 {
     return Point(x-pt.x, y-pt.y, z-pt.z);
 }
 
-inline Point Point::operator- (double val) const
+Point Point::operator- (double val) const
 {
     return Point(x-val, y-val, z-val);
 }
 
-inline Point Point::operator* (double val) const
+Point Point::operator* (double val) const
 {
     return Point(x*val, y*val, z*val);
 }
 
-inline Point Point::operator/ (double val) const
+Point Point::operator/ (double val) const
 {
     assert(val != 0);
     return Point(x/val, y/val, z/val);
 }
 
-inline bool Point::operator== (const Point& pt) const
+bool Point::operator== (const Point& pt) const
 {
     return (x == pt.x && y == pt.y) && z == pt.z;
 }
 
-inline bool Point::operator!= (const Point& pt) const
+bool Point::operator!= (const Point& pt) const
 {
     return !(*this == pt);
 }
