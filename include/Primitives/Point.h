@@ -1,52 +1,154 @@
 #pragma once
 #include <utility>
-#include <cassert>
+#include <cmath>
+#include <initializer_list>
+
+#include <algorithm>
+#include <functional>
 
 #include "Primitives/IEntity.h"
+#include "Primitives/Elementary.h"
 
-struct Point : public IEntity, public Vec3d
+#include <blitz/tvecglobs.h>
+
+template<size_t nDim>
+struct Point : public IEntity<nDim>
 {
-    Point();
-    Point(double _x, double _y, double _z);
-    Point(const Point& pt);
+public:
+    Point()
+    {
+        std::fill(_vec.begin(), _vec.end(), 0.);
+        Point::_tag++;        
+    }
 
-    Point(Point&& pt);
+    Point(const Point& pt)
+    {
+        std::copy(pt._vec.begin(), pt._vec.end(), _vec.begin());
+        Point::_tag++;
+    }
 
-    double magnitude() const;
-    Point unitVector() const;
+    Point(Point&& pt) noexcept
+    {
+        std::move(pt._vec.begin(), pt._vec.end(), _vec.begin());
+        Point::_tag++;
+    }
 
-    static double dot(const Vec3d& U, const Vec3d& V);
+    Point(const std::initializer_list<double>& argList)
+    {
+        std::copy(argList.begin(), argList.end(), _vec.begin());
+        Point::_tag++;
+    }
+
+    Point(std::initializer_list<double>&& argList) noexcept
+    {
+        std::move(argList.begin(), argList.end(), _vec.begin());
+        Point::_tag++;
+    }
 
 public:
-    void setTag(const label tag) override;
-    label tag() const override;
+    double& operator[] (size_t index)
+    {
+        return _vec[index];
+    }
+
+    double& operator[] (size_t index) const
+    {
+        return _vec[index];
+    }
+
+    Point operator= (const Point& pt)
+    {
+        std::copy(pt._vec.begin(), pt._vec.end(), _vec.begin());   
+        if(pt != *this)
+        {
+            Point::_tag++;
+        }
+
+        return *this;
+    }
+
+    Point operator= (Point&& pt) noexcept
+    {
+        std::move(pt._vec.begin(), pt._vec.end(), _vec.begin());
+        if(pt != *this)
+        {
+            Point::_tag++;
+        }
+
+        return *this;
+    }
+
+    Point operator+ (const Point& pt)
+    {
+        Point out;
+        std::transform(_vec.begin(), _vec.end(), pt._vec.begin(), out._vec.begin(), std::plus<double>());
+
+        return out;
+    }
+
+    Point& operator+= (const Point& pt)
+    {
+        std::transform(_vec.begin(), _vec.end(), pt._vec.begin(), _vec.begin(), std::plus<double>());
+        return *this;
+    }    
+
+    Point operator- (const Point& pt)
+    {
+        Point out;
+        std::transform(_vec.begin(), _vec.end(), pt._vec.begin(), out._vec.begin(), std::minus<double>());
+
+        return out;
+    }
+
+    Point& operator-= (const Point& pt)
+    {
+        std::transform(_vec.begin(), _vec.end(), pt._vec.begin(), _vec.begin(), std::minus<double>());
+        return *this;
+    }
+
+    bool operator== (const Point& pt) const
+    {
+        return std::equal(_vec.begin(), _vec.end(), pt._vec.begin());
+    }
+
+    bool operator!= (const Point& pt) const
+    {
+        return !(*this == pt);
+    }
+
+public:
+    double magnitude() const
+    {
+        return std::transform(_vec.begin(), _vec.end(), std::plus<double>());
+    }
+
+public:
+    label tag() const override
+    {
+        return _tag;
+    }
 
     // geometry transformation
-    void translate(const Vec3d& translationVector) override;
-    void rotate(double angle, Vec3d axis) override;
-    void scale(double factor) override;
+    void translate(const blitz::TinyVector<double, nDim>& translationVector) override
+    {
+    }
 
-public:
-    Point operator= (const Point& pt);
-    Point operator= (Point&& pt);
+    void rotate(double angle, blitz::TinyVector<double, nDim> axis) override
+    {
+    }
 
-    Point operator+ (const Point& pt);
-    Point operator+ (double val) const;
+    void scale(double factor) override
+    {
+    }
 
-    Point operator- (const Point& pt);
-    Point operator- (double val) const;
-
-    Point operator* (double val) const;
-    Point operator/ (double val) const;
-
-    bool operator== (const Point& pt) const;
-    bool operator!= (const Point& pt) const;
-
-public:
-    double x;
-    double y;
-    double z;
+    blitz::TinyVector<double, nDim> unitVector() const
+    {
+    }
 
 private:
-    label _tag;
+    static label _tag;
+    blitz::TinyVector<double, nDim> _vec;
 };
+
+template<size_t nDim>
+label Point<nDim>::_tag = 0;
