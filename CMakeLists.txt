@@ -12,7 +12,7 @@ set(CMAKE_CXX_STANDARD 17)
 add_compile_options(-fPIC)
 
 option(BUILD_TESTING "Build tests" ON)
-option(BUILD_DOC "Build documentation" ON)
+option(BUILD_DOC "Build documentation" OFF)
 
 # Only do these if this is the main project, and not if it is included through add_subdirectory
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
@@ -25,7 +25,8 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
   include(CTest)
 
   find_package(Doxygen)
-  if(Doxygen_FOUND)
+  if(BUILD_DOC)
+      if(Doxygen_FOUND)
     
     set(DOXYGEN_IN doc/Doxyfile.in)
     set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
@@ -41,6 +42,7 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 
   else()
     message(STATUS "Doxygen not found, not building docs")
+     endif()
   endif()
 
 endif()
