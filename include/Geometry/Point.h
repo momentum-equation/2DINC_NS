@@ -1,6 +1,8 @@
 #pragma once
 #include <utility>
 #include <cmath>
+#include <numeric>
+
 #include <initializer_list>
 #include <unordered_map>
 
@@ -44,12 +46,12 @@ public:
     }
 
 public:
-    double& operator[] (size_t index)
+    double& operator[] (const size_t index)
     {
         return _vec[index];
     }
 
-    double& operator[] (size_t index) const
+    const double& operator[] (const size_t index) const
     {
         return _vec[index];
     }
@@ -92,6 +94,13 @@ public:
         return *this;
     }
 
+    friend Point operator* (double coeff, const Point<3>& pt)
+    {
+        Point out;
+        std::transform(pt._vec.begin(), pt._vec.end(), out._vec.begin(), [coeff](double value){ return coeff*value; });
+        return out;
+    }
+
     bool operator== (const Point& pt) const
     {
         return std::equal(_vec.begin(), _vec.end(), pt._vec.begin());
@@ -103,17 +112,48 @@ public:
     }
 
 public:
-    double magnitude() const
+    using Iterator = typename blitz::TinyVector<double, nDim>::iterator;
+    using ConstIterator = typename blitz::TinyVector<double, nDim>::const_iterator;
+
+    Iterator begin()
     {
-        return std::transform(_vec.begin(), _vec.end(), std::plus<double>());
+        return _vec.data();
     }
 
-    
+    ConstIterator begin() const
+    {
+        return _vec.data();
+    }
+
+    Iterator end()
+    {
+        return _vec.end();
+    }
+
+    ConstIterator end() const
+    {
+        return _vec.end();
+    }
+
+public:
+    double magnitude()
+    {
+        auto dot = [](double val) -> double 
+        {
+            return val*val;
+        };
+
+        blitz::TinyVector<double, nDim> out;
+        std::transform(_vec.begin(), _vec.end(), out.begin(), dot);
+        double magSqr = std::accumulate(out.begin(), out.end(), 0.);
+
+        return std::sqrt(magSqr);
+    }
 
 public:
     label tag() const override
     {
-        return ObjectCount<Point>::count;
+        return ObjectCount<Point>::Count();
     }
 
     // geometry transformation
@@ -132,6 +172,11 @@ public:
     blitz::TinyVector<double, nDim> unitVector() const
     {
         return blitz::TinyVector<double, nDim>();
+    }
+
+    blitz::TinyVector<double, nDim> data() const
+    {
+        return _vec;
     }
 
 private:

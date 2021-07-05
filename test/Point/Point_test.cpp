@@ -1,7 +1,9 @@
 #include <gtest/gtest.h>
 #include "Geometry/Point.h"
-
+#include "Primitives/VectorMath.h"
 #include <iostream>
+
+typedef Point<3> Point3d;
 
 int PointCount = 0;
 
@@ -43,6 +45,7 @@ TEST(Point, SimplePoint)
     EXPECT_DOUBLE_EQ(pt6[0], 1.1);
     EXPECT_DOUBLE_EQ(pt6[1], 2.4);
     EXPECT_DOUBLE_EQ(pt6[2], 8.25);
+
 }
 
 TEST(Point, Operators)
@@ -116,9 +119,67 @@ TEST(Point, Operators)
     EXPECT_DOUBLE_EQ(pt7[1], 1);
     EXPECT_DOUBLE_EQ(pt7[2], 0);
     EXPECT_EQ(pt7.tag(), ++PointCount);
+
+    Point3d pt8({1.1, 2.4, 8.25});
+    EXPECT_EQ(pt8.tag(), ++PointCount);
+
+    Point3d pt9 = 7*pt8;
+    EXPECT_DOUBLE_EQ(pt9[0], 7.7);
+    EXPECT_DOUBLE_EQ(pt9[1], 16.8);
+    EXPECT_DOUBLE_EQ(pt9[2], 57.75);
+    EXPECT_EQ(pt9.tag(), ++PointCount);
+
+    Point3d pt10 = 4.1*pt8 - pt7;
+    EXPECT_DOUBLE_EQ(pt10[0], 4.51);
+    EXPECT_DOUBLE_EQ(pt10[1], 8.84);
+    EXPECT_DOUBLE_EQ(pt10[2], 33.825);
+    EXPECT_EQ(pt10.tag(), ++PointCount);
 }
 
 TEST(Point, Transformations)
 {
-        
+    Point3d pt1;
+    EXPECT_DOUBLE_EQ(pt1.magnitude(), 0);
+
+    Point3d pt2({1.2104, 4.336, 9.8795});
+    EXPECT_DOUBLE_EQ(pt2.magnitude(), 10.8568174162597);
 }
+
+TEST(Point, VectorProduct)
+{
+    Point3d pt;
+    Point3d pt0;
+
+    EXPECT_DOUBLE_EQ(VectorMath::dot(pt, pt0), 0.);
+
+    Point3d pt1 = {1., 0., 0.};
+    Point3d pt2 = {0., 1., 0.};
+
+    EXPECT_DOUBLE_EQ(VectorMath::dot(pt1, pt2), 0.);
+
+    Point3d pt3 = {3.2, 4.9, 0};
+    Point3d pt4({1., 0., 0.});
+
+    EXPECT_DOUBLE_EQ(VectorMath::dot(pt3, pt4), 3.2);
+    EXPECT_DOUBLE_EQ(VectorMath::dot(pt3, pt4), VectorMath::dot(pt4, pt3));
+
+    Point3d pt5({1.07, 1.9, 5.54});
+    Point3d pt6 = {6.8, 2.3, 4.815};
+
+    EXPECT_DOUBLE_EQ(VectorMath::dot(pt5, pt6), 38.3211);
+
+    Point3d pt7({1, 0, 0});
+    Point3d pt8({0, 1, 0});
+    Point3d pt9 = VectorMath::cross(pt7, pt8);
+    EXPECT_DOUBLE_EQ(pt9[0], 0);
+    EXPECT_DOUBLE_EQ(pt9[1], 0);
+    EXPECT_DOUBLE_EQ(pt9[2], 1);
+
+    Point3d pt10({3.11, 9.094, 0.44});
+    Point3d pt11({1.462, 8, 4.66});
+    Point3d pt12 = VectorMath::cross(pt10, pt11);
+    EXPECT_DOUBLE_EQ(pt12[0], 38.85804);
+    EXPECT_DOUBLE_EQ(pt12[1], -13.84932);
+    EXPECT_DOUBLE_EQ(pt12[2], 11.584572);
+}
+
