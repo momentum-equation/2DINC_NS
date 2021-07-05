@@ -7,10 +7,11 @@
  * 
  * @tparam ObjectType : Achieve static polymorphism
  */
+
 template<typename ObjectType>
 class ObjectCount
 {
-protected:
+private:
     static label count;
 
 public:

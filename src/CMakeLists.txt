@@ -16,7 +16,7 @@ target_include_directories(MeshGenerator PUBLIC ${PROJECT_INCLUDE_DIR} ${THIRDPA
 target_link_directories(MeshGenerator PUBLIC "${THIRDPARTY_DIR}/gmsh/build")
 target_link_libraries(MeshGenerator PUBLIC gmsh.so)
 
-add_library(Point SHARED Point.cpp "${PROJECT_INCLUDE_DIR}/Primitives/Point.h")
+add_library(Point SHARED Point.cpp "${PROJECT_INCLUDE_DIR}/Geometry/Point.h")
 target_compile_features(Point PUBLIC cxx_std_17)
 target_include_directories(Point PUBLIC ${PROJECT_INCLUDE_DIR})
 target_link_libraries(Point PUBLIC blitz.so)
