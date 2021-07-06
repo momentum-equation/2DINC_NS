@@ -2,6 +2,7 @@
 #include "Geometry/Point.h"
 #include "Primitives/VectorMath.h"
 #include <iostream>
+#include <vector>
 
 typedef Point<3> Point3d;
 
@@ -134,19 +135,25 @@ TEST(Point, Operators)
     EXPECT_DOUBLE_EQ(pt10[1], 8.84);
     EXPECT_DOUBLE_EQ(pt10[2], 33.825);
     EXPECT_EQ(pt10.tag(), ++PointCount);
+
+    Point3d pt11 = {3, 4, 5};
+    EXPECT_EQ(pt11.tag(), ++PointCount);
+
+    Point3d pt12 = -pt11;
+    EXPECT_DOUBLE_EQ(pt12[0], -3);
+    EXPECT_DOUBLE_EQ(pt12[1], -4);
+    EXPECT_DOUBLE_EQ(pt12[2], -5);
+    EXPECT_EQ(pt12.tag(), ++PointCount);
 }
 
-TEST(Point, Transformations)
+TEST(Point, VectorProducts)
 {
-    Point3d pt1;
-    EXPECT_DOUBLE_EQ(pt1.magnitude(), 0);
+    Point3d p;
+    EXPECT_DOUBLE_EQ(p.magnitude(), 0);
 
-    Point3d pt2({1.2104, 4.336, 9.8795});
-    EXPECT_DOUBLE_EQ(pt2.magnitude(), 10.8568174162597);
-}
+    Point3d q({1.2104, 4.336, 9.8795});
+    EXPECT_DOUBLE_EQ(q.magnitude(), 10.8568174162597);
 
-TEST(Point, VectorProduct)
-{
     Point3d pt;
     Point3d pt0;
 
@@ -168,6 +175,8 @@ TEST(Point, VectorProduct)
 
     EXPECT_DOUBLE_EQ(VectorMath::dot(pt5, pt6), 38.3211);
 
+    EXPECT_DOUBLE_EQ(VectorMath::dot(Point3d({4.5, 3, 10}), Point3d({2, 2.1, 3.2})), 47.3);
+
     Point3d pt7({1, 0, 0});
     Point3d pt8({0, 1, 0});
     Point3d pt9 = VectorMath::cross(pt7, pt8);
@@ -183,3 +192,65 @@ TEST(Point, VectorProduct)
     EXPECT_DOUBLE_EQ(pt12[2], 11.584572);
 }
 
+TEST(Point, Transformations)
+{
+    Point3d p = {5, 0, 0};
+
+    Point3d pt1 = {3.2, 87.44, 0};
+    VectorMath::translate(pt1, p);
+    EXPECT_DOUBLE_EQ(pt1[0], 8.2);
+    EXPECT_NE(pt1[1], 92.44);
+    EXPECT_NE(pt1[2], 5);
+
+    std::vector<Point3d> triangle;
+    triangle.push_back(Point3d({0, 0, 0}));
+    triangle.push_back(Point3d({5.3, 0, 0}));
+    triangle.push_back(Point3d({8, 7.2, 0}));
+
+    VectorMath::translate(triangle, p);
+
+    EXPECT_DOUBLE_EQ(triangle[0][0], 5);
+    EXPECT_DOUBLE_EQ(triangle[1][0], 10.3);
+    EXPECT_DOUBLE_EQ(triangle[2][0], 13);
+
+    EXPECT_NE(triangle[0][1], 5);
+    EXPECT_NE(triangle[0][2], 5);
+    EXPECT_NE(triangle[1][1], 5);
+    EXPECT_NE(triangle[1][2], 5);
+    EXPECT_NE(triangle[2][1], 12.2);
+    EXPECT_NE(triangle[2][2], 5);
+
+    std::vector<Point3d> rightTriangle;
+    rightTriangle.emplace_back(Point3d({0, 0, 0}));
+    rightTriangle.emplace_back(Point3d({3, 0, 0}));
+    rightTriangle.emplace_back(Point3d({0, 4, 0}));
+
+    VectorMath::rotate(rightTriangle, 90., Point3d({0, 0, 1}));
+
+    EXPECT_NEAR(rightTriangle[0][0], 0, 1e-15);
+    EXPECT_NEAR(rightTriangle[0][1], 0, 1e-15);
+    EXPECT_NEAR(rightTriangle[0][2], 0, 1e-15);
+
+    EXPECT_NEAR(rightTriangle[1][0], 0, 1e-15);
+    EXPECT_NEAR(rightTriangle[1][1], 3, 1e-15);
+    EXPECT_NEAR(rightTriangle[1][2], 0, 1e-15);
+
+    EXPECT_NEAR(rightTriangle[2][0], -4, 1e-15);
+    EXPECT_NEAR(rightTriangle[2][1], 0, 1e-15);
+    EXPECT_NEAR(rightTriangle[2][2], 0, 1e-15);
+
+    std::vector<Point3d> segment;
+    segment.emplace_back(Point3d({0, 0, 0}));
+    segment.emplace_back(Point3d({2, 2, 0}));
+
+    VectorMath::rotate(segment, -45, Point3d({0, 0, 1}), Point3d({1, 1, 0}));
+
+    EXPECT_NEAR(segment[0][0], -0.4142135623730949, 1e-15);
+    EXPECT_NEAR(segment[0][1], 1, 1e-15);
+    EXPECT_NEAR(segment[0][2], 0, 1e-15);
+
+    EXPECT_NEAR(segment[1][0], 2.4142135623730949, 1e-15);
+    EXPECT_NEAR(segment[1][1], 1, 1e-15);
+    EXPECT_NEAR(segment[1][2], 0, 1e-15);
+
+}

@@ -17,7 +17,6 @@
 
 template<size_t nDim>
 struct Point :
-    public IEntity<nDim>,
     public ObjectCount<Point<nDim>>
 {
 public:
@@ -31,6 +30,12 @@ public:
         ObjectCount<Point>()
     {
         std::copy(pt._vec.begin(), pt._vec.end(), _vec.begin());
+    }
+
+    Point(Point&& pt) noexcept:
+        ObjectCount<Point>()
+    {
+        std::move(pt._vec.begin(), pt._vec.end(), _vec.begin());
     }
 
     Point(const std::initializer_list<double>& argList):
@@ -101,6 +106,13 @@ public:
         return out;
     }
 
+    friend Point operator/ (const Point<3>& pt, double coeff)
+    {
+        Point out;
+        std::transform(pt._vec.begin(), pt._vec.end(), out._vec.begin(), [coeff](double value){ assert(coeff != 0); return value/coeff; });
+        return out;
+    }
+
     bool operator== (const Point& pt) const
     {
         return std::equal(_vec.begin(), _vec.end(), pt._vec.begin());
@@ -111,18 +123,30 @@ public:
         return !(*this == pt);
     }
 
+    bool operator!= (const std::initializer_list<double> coordinates) const
+    {
+        return !(*this == coordinates);
+    }
+
+    Point operator- () const
+    {
+        Point p;
+        std::transform(_vec.begin(), _vec.end(), p.begin(), [](double val){ return -val; });
+        return p;
+    }
+
 public:
     using Iterator = typename blitz::TinyVector<double, nDim>::iterator;
     using ConstIterator = typename blitz::TinyVector<double, nDim>::const_iterator;
 
     Iterator begin()
     {
-        return _vec.data();
+        return _vec.begin();
     }
 
     ConstIterator begin() const
     {
-        return _vec.data();
+        return _vec.begin();
     }
 
     Iterator end()
@@ -136,7 +160,7 @@ public:
     }
 
 public:
-    double magnitude()
+    double magnitude() const
     {
         auto dot = [](double val) -> double 
         {
@@ -151,27 +175,14 @@ public:
     }
 
 public:
-    label tag() const override
+    label tag() const
     {
         return ObjectCount<Point>::Count();
     }
 
-    // geometry transformation
-    void translate(const blitz::TinyVector<double, nDim>& translationVector) override
+    Point unitVector() const
     {
-    }
-
-    void rotate(double angle, blitz::TinyVector<double, nDim> axis) override
-    {
-    }
-
-    void scale(double factor) override
-    {
-    }
-
-    blitz::TinyVector<double, nDim> unitVector() const
-    {
-        return blitz::TinyVector<double, nDim>();
+        return *this/magnitude();
     }
 
     blitz::TinyVector<double, nDim> data() const
